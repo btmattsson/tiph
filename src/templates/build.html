@@ -1,0 +1,93 @@
+{% extends "menu.html" %}{% block content %}
+<div class="row">
+  <div class="col">
+    Base64 encoded profile to put into metadata :<br><br>
+    <pre>
+{{profile64}}
+    </pre>
+    <hr>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <h3>Profiles</h3>{% for key in profileJSON.profiles %}
+    <b>{{key}}</b>
+    <a href="/build/{{key}}"><i class="fa fa-pencil-alt"></i></a>
+    <i class="fas fa-trash"></i>
+    <pre>
+{{profileJSON.profiles[key] | tojson(2)}}</pre>{% endfor %}
+  </div>
+  <div class="col">
+    <form method="POST">
+      <div>
+        <label for="name">Name :</label>
+        <input id="name" type="input" name="name" value="{{editProfile.name}}">
+      </div>
+      <div>
+        Entities:
+{% if editProfile.profile.entities %}
+  {% set counter = namespace(value=0) %}
+  {% for entity in editProfile.profile.entities %}
+        <div>
+          <label for="select">Select :</label>
+          <input id="select" type="input" name="select_{{counter.value}}" value="{{entity.select}}">
+          <br>
+          <label for="match">Match :</label>
+          <select id="match" name="match_{{counter.value}}">
+            <option value="registrationAuthority"{% if entity.match == 'registrationAuthority' %} selected{% endif %}>registrationAuthority</option>
+            <option value="entity_category"{% if entity.match == 'entity_category' %} selected{% endif %}>entity_category</option>
+            <option value="assurance_certification"{% if entity.match == 'assurance_certification' %} selected{% endif %}>assurance_certification</option>
+            <option value="entity_category_support"{% if entity.match == 'entity_category_support' %} selected{% endif %}>entity_category_support</option>
+            <option value="md_source"{% if entity.match == 'md_source' %} selected{% endif %}>md_source</option>
+          </select>
+          <br>
+          <label for="include">Include :</label>
+          <select id="include" name="include_{{counter.value}}">
+            <option value="true"{% if entity.include %} selected{% endif %}>True</option>
+            <option value="false">False</option>
+          </select>
+          <br>
+        </div>
+        <hr>
+    {% set counter.value = counter.value + 1 %}
+  {% endfor %}
+{% endif%}
+      </div>
+      <div>
+        <label for="strict">strict :</label>
+        <select id="strict" name="strict">
+          <option value="true"{% if editProfile.profile.strict %} selected{% endif %}>True</option>
+          <option value="false"{% if not editProfile.profile.strict %} selected{% endif %}>False</option>
+        </select>
+      </div>
+      <input type="submit">
+    </form>
+    <hr>
+    <!--form>
+      <table>
+        <tr>
+          <td rowspan="3">Entities</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Strict :</td>
+          {{editProfile.strict}}
+          <td colspan="2">
+            <input type="radio" name="strict" value="true" id="strict_true"/>
+            <label for="strict_true">True</label>
+            <br>
+            <input type="radio" name="strict" value="false" id="strict_false"/>
+            <label for="strict_false">False</label>
+          </td>
+        </tr>
+      </table>
+    </form-->
+  </div>
+</div>
+{% endblock %}

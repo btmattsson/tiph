@@ -1,0 +1,23 @@
+{% extends "menu.html" %}{% block content %}
+<div class="row">
+  <div class="col">
+    Enter base64 encoded profile to view it's contents<br>
+    <form method="POST">
+      <textarea rows="10" cols="40" name="profile64">{{profile64}}</textarea><br>
+      <input type = "submit" value = "submit"/>
+    </form>
+{% if profileJSONraw != '' %}
+    <br>
+    <h3>Raw output</h3>
+    Should be minified to save place in XML!!!<br>
+    {{profileJSONraw}}
+    <br>
+    <br>
+    <h3>Pretty print output</h3>
+    <pre>
+{{profileJSON}}
+    </pre>
+{% endif %}
+  </div>
+</div>
+{% endblock %}

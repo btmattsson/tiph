@@ -1,0 +1,3 @@
+flask
+Font-Awesome-Flask
+JSON_minify
