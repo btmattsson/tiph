@@ -1,4 +1,28 @@
 {% extends "menu.html" %}{% block content %}{% set counter = namespace(value=0) %}
+<script>
+  function updateMatch(id) {
+    const matchElement = document.querySelector("#match_"+id);
+    const selectElement = document.querySelector("#select_"+id);
+    var match = matchElement.value;
+    var select = selectElement.options[selectElement.selectedIndex].text;
+    var url = "/api/select/"+match;
+    var options = '';
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      values = data.values
+      for (var key in values) {
+        if (select == values[key].value) {
+          options += '<option value="' + values[key].value + '" selected>' + values[key].value + '</option>'
+        } else {
+          options += '<option value="' + values[key].value + '">' + values[key].value + '</option>'
+        }
+      }
+      selectElement.innerHTML = options;
+    })
+    .catch(err => console.log(err));
+  }
+</script>
 <div class="row">
   <div class="col">
     Base64 encoded profile to put into metadata :<br><br>
@@ -36,17 +60,19 @@
           <a href="/build/{{editProfile.name}}?removeEntities={{counter.value}}"><i class="fas fa-trash"></i></a>
         </div>
         <div class="col border">
-          <label for="select_{{counter.value}}">Select :</label>
-          <input id="select_{{counter.value}}" type="input" name="select_{{counter.value}}" value="{{entity.select}}">
-          <br>
           <label for="match_{{counter.value}}">Match :</label>
-          <select id="match_{{counter.value}}" name="match_{{counter.value}}">
+          <select id="match_{{counter.value}}" name="match_{{counter.value}}" onchange="updateMatch({{counter.value}})">
             <option value="registrationAuthority"{% if entity.match == 'registrationAuthority' %} selected{% endif %}>registrationAuthority</option>
             <option value="entity_category"{% if entity.match == 'entity_category' %} selected{% endif %}>entity_category</option>
             <option value="assurance_certification"{% if entity.match == 'assurance_certification' %} selected{% endif %}>assurance_certification</option>
             <option value="entity_category_support"{% if entity.match == 'entity_category_support' %} selected{% endif %}>entity_category_support</option>
             <option value="md_source"{% if entity.match == 'md_source' %} selected{% endif %}>md_source</option>
           </select>
+          <br>
+          <label for="select_{{counter.value}}">Select :</label>
+          <select id="select_{{counter.value}}" name="select_{{counter.value}}">
+            <option value="0">{{entity.select}}</option>
+          </select><script>updateMatch({{counter.value}})</script>
           <br>
           <label for="entities_include_{{counter.value}}">Include :</label>
           <select id="entities_include_{{counter.value}}" name="entities_include_{{counter.value}}">
@@ -90,4 +116,5 @@
     </form>
   </div>
 </div>
+
 {% endblock %}

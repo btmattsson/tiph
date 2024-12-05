@@ -11,6 +11,8 @@ font_awesome = FontAwesome(app)
 
 app.secret_key = 'BAD_SECRET_KEY'
 
+application = app
+
 @app.route('/')
 @app.route('/home')
 def index():
@@ -162,7 +164,15 @@ def apiSelect(matchTerm):
   connect = sqlite3.connect('database.db')
   cursor = connect.cursor()
 
-  if matchTerm == 'md_source':
+  if matchTerm == 'registrationAuthority':
+    cursor.execute('SELECT id, name FROM registrationAuthority')
+  elif matchTerm == 'entity_category':
+    cursor.execute('SELECT id, name FROM entity_category')
+  elif matchTerm == 'assurance_certification':
+    cursor.execute('SELECT id, name FROM assurance_certification')
+  elif matchTerm == 'entity_category_support':
+    cursor.execute('SELECT id, name FROM entity_category_support')
+  elif matchTerm == 'md_source':
     cursor.execute('SELECT id, name FROM md_source')
   else:
     print (f'Unkown match requested %s', (matchTerm))
